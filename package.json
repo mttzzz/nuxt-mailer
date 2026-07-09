@@ -1,0 +1,64 @@
+{
+  "name": "@mttzzz/nuxt-mailer",
+  "version": "0.1.0",
+  "description": "Nuxt 4 module: unified email sending via the mailer.pushka.biz SMTP gateway",
+  "license": "MIT",
+  "repository": "github:mttzzz/nuxt-mailer",
+  "workspaces": [
+    "playground"
+  ],
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "./dist/module.mjs",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/types.d.mts"
+      ],
+      "server": [
+        "./dist/runtime/server/send-mail.d.ts"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    },
+    "./server": {
+      "types": "./dist/runtime/server/send-mail.d.ts",
+      "import": "./dist/runtime/server/send-mail.js"
+    }
+  },
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "dev": "npm run dev:prepare && nuxt dev playground",
+    "dev:build": "nuxt build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
+    "lint": "oxlint --type-aware -f unix",
+    "fmt": "oxfmt",
+    "test": "vitest run",
+    "test:types": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^4.4.5",
+    "nodemailer": "^9.0.3"
+  },
+  "devDependencies": {
+    "@nuxt/module-builder": "^1.0.2",
+    "@nuxt/schema": "^4.4.5",
+    "@types/node": "latest",
+    "@types/nodemailer": "^8.0.1",
+    "nuxt": "^4.4.5",
+    "oxfmt": "^0.58.0",
+    "oxlint": "^1.73.0",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.10",
+    "vue-tsc": "^3.3.5"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0"
+  }
+}
