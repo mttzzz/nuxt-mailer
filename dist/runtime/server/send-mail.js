@@ -1,5 +1,5 @@
+import { useRuntimeConfig } from "nitropack/runtime";
 import nodemailer from "nodemailer";
-import { useRuntimeConfig } from "#imports";
 let transport;
 function getTransport() {
   if (transport) {
@@ -8,7 +8,7 @@ function getTransport() {
   const cfg = useRuntimeConfig().mailer;
   transport = nodemailer.createTransport({
     host: cfg.host,
-    port: Number(cfg.port) || 587,
+    port: cfg.port || 587,
     secure: false,
     ignoreTLS: true,
     pool: true,

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-const sendMailMock = vi.fn(async () => ({ messageId: 'mid-123' }))
-const createTransportMock = vi.fn(() => ({ sendMail: sendMailMock }))
+const sendMailMock = vi.fn(() => Promise.resolve({ messageId: 'mid-123' }))
+const createTransportMock = vi.fn((_options: unknown) => ({ sendMail: sendMailMock }))
 vi.mock('nodemailer', () => ({ default: { createTransport: createTransportMock } }))
 
 const { sendMail } = await import('../src/runtime/server/send-mail')
@@ -20,7 +20,7 @@ describe('sendMail', () => {
 
   it('транспорт до gateway из runtimeConfig (host/port, plaintext, ignoreTLS)', async () => {
     await sendMail({ from: 'a@x.com', to: 'b@y.com', subject: 's', text: 't' })
-    const opts = createTransportMock.mock.calls[0]![0]
+    const [opts] = createTransportMock.mock.calls[0]!
     expect(opts).toMatchObject({ host: 'gw-host', port: 587, secure: false, ignoreTLS: true, pool: true })
   })
 })

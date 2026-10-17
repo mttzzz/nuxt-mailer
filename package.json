@@ -1,6 +1,6 @@
 {
   "name": "@mttzzz/nuxt-mailer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Nuxt 4 module: unified email sending via the mailer.pushka.biz SMTP gateway",
   "license": "MIT",
   "repository": "github:mttzzz/nuxt-mailer",
@@ -51,9 +51,11 @@
     "@nuxt/schema": "^4.4.5",
     "@types/node": "latest",
     "@types/nodemailer": "^8.0.1",
+    "nitropack": "^2.13.4",
     "nuxt": "^4.4.5",
     "oxfmt": "^0.58.0",
     "oxlint": "^1.73.0",
+    "oxlint-tsgolint": "^7.0.2004",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10",
     "vue-tsc": "^3.3.5"

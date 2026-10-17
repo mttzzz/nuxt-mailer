@@ -31,7 +31,7 @@ export default defineNuxtModule<ModuleOptions>({
       port: opts.port ?? existing.port ?? DEFAULT_PORT,
     }
 
-    /* sendMail — авто-импорт в nitro-серверном контексте всех проектов: единый путь отправки. */
+    /* Авто-импорт sendMail в nitro-серверном контексте всех проектов: единый путь отправки. */
     addServerImports([{ name: 'sendMail', from: resolver.resolve('./runtime/server/send-mail') }])
   },
 })

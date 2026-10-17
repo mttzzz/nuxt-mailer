@@ -1,6 +1,8 @@
+/* Явный импорт, а не '#imports': под compat 5 (Nuxt ≥ 4.6.2, nitroAutoImports: false) хелперы
+   nitropack в виртуальном '#imports' больше нет, и сборка падала бы на этом файле. */
+import { useRuntimeConfig } from 'nitropack/runtime'
 import nodemailer, { type Transporter } from 'nodemailer'
-
-import { useRuntimeConfig } from '#imports'
+import type SMTPPool from 'nodemailer/lib/smtp-pool'
 
 export interface MailerEmail {
   from: string
@@ -10,19 +12,19 @@ export interface MailerEmail {
   text?: string
 }
 
-let transport: Transporter | undefined
+let transport: Transporter<SMTPPool.SentMessageInfo> | undefined
 
-function getTransport(): Transporter {
+function getTransport(): Transporter<SMTPPool.SentMessageInfo> {
   if (transport) {
     return transport
   }
-  const cfg = useRuntimeConfig().mailer as { host: string; port: number }
+  const cfg = useRuntimeConfig().mailer
   /* Gateway внутрикластерный, plaintext: без AUTH и без STARTTLS (ingest = authOptional +
      disabledCommands:['STARTTLS']). ignoreTLS отключает попытку STARTTLS-upgrade nodemailer'ом.
      pool — переиспользуем соединения под поток писем. */
   transport = nodemailer.createTransport({
     host: cfg.host,
-    port: Number(cfg.port) || 587,
+    port: cfg.port || 587,
     secure: false,
     ignoreTLS: true,
     pool: true,
