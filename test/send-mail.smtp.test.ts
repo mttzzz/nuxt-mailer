@@ -10,7 +10,7 @@ import { type FakeSmtp, type FakeSmtpScript, startFakeSmtp } from './helpers/fak
 
 type SendMail = (email: MailerEmail) => Promise<{ messageId: string }>
 
-/* Что тесты читают из ошибки nodemailer; `cause` у Error — собственное неперечисляемое свойство. */
+/* Что тесты читают из ошибки nodemailer. */
 interface ErrorFacts {
   name?: unknown
   code?: unknown
@@ -61,15 +61,22 @@ async function failure(sending: Promise<unknown>): Promise<unknown> {
   throw new Error('Отправка должна была упасть')
 }
 
-function errorFacts(error: unknown): ErrorFacts {
+/* Поле ошибки так, как его читает воркер ai.pushka.biz (`pick` каркаса в isPermanentMailError): только собственное
+   поле-данные, без прототипа и геттеров. Перенесёт nodemailer `code` или `responseCode` на прототип — отказ перестанет
+   опознаваться, и эти тесты это поймают. */
+function ownField(error: unknown, key: string): unknown {
   if (typeof error !== 'object' || error === null) {
-    return {}
+    return undefined
   }
+  return Object.getOwnPropertyDescriptor(error, key)?.value
+}
+
+function errorFacts(error: unknown): ErrorFacts {
   return {
-    name: 'name' in error ? error.name : undefined,
-    code: 'code' in error ? error.code : undefined,
-    responseCode: 'responseCode' in error ? error.responseCode : undefined,
-    cause: 'cause' in error ? error.cause : undefined,
+    name: ownField(error, 'name'),
+    code: ownField(error, 'code'),
+    responseCode: ownField(error, 'responseCode'),
+    cause: ownField(error, 'cause'),
   }
 }
 
@@ -192,7 +199,7 @@ describe('sendMail: signal', () => {
     const facts = errorFacts(error)
 
     expect(facts).toMatchObject({ name: 'AbortError', code: 'EABORT' })
-    expect(errorFacts(facts.cause).name).toBe('TimeoutError')
+    expect(facts.cause).toHaveProperty('name', 'TimeoutError')
     await until(() => {
       expect(smtp.closedConnections).toBe(1)
     })
