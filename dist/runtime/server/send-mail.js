@@ -1,12 +1,12 @@
 import { useRuntimeConfig } from "nitropack/runtime";
-import nodemailer from "nodemailer";
+import { createTransport } from "nodemailer";
 let transport;
 function getTransport() {
   if (transport) {
     return transport;
   }
   const cfg = useRuntimeConfig().mailer;
-  transport = nodemailer.createTransport({
+  transport = createTransport({
     host: cfg.host,
     port: cfg.port || 587,
     secure: false,

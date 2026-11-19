@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const sendMailMock = vi.fn(() => Promise.resolve({ messageId: 'mid-123' }))
 const createTransportMock = vi.fn((_options: unknown) => ({ sendMail: sendMailMock }))
-vi.mock('nodemailer', () => ({ default: { createTransport: createTransportMock } }))
+vi.mock('nodemailer', () => ({ createTransport: createTransportMock }))
 
 const { sendMail } = await import('../src/runtime/server/send-mail')
 

@@ -4,6 +4,7 @@ export interface MailerEmail {
     subject: string;
     html?: string;
     text?: string;
+    signal?: AbortSignal | undefined;
 }
 export declare function sendMail(email: MailerEmail): Promise<{
     messageId: string;
